@@ -1,16 +1,49 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"math/rand/v2"
+)
 
-func main() {
-	a := [4]int{1, 2, 3, 4}
-	reverse(&a) // Меняет порядок элементов на обратный
-	fmt.Println(a)
-
+type account struct {
+	login    string
+	password string
+	url      string
 }
 
-func reverse(arr *[4]int) {
-	for index, value := range *arr {
-		(*arr)[len(arr)-1-index] = value
+var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-*!")
+
+func main() {
+	fmt.Println(generatePassword(12))
+	login := promptData("Введите логин")
+	password := promptData("Введите пароль")
+	url := promptData("Введите URL")
+
+	myAccount := account{
+		password: password,
+		url:      url,
+		login:    login,
 	}
+
+	outputPassword(&myAccount)
+}
+
+func promptData(prompt string) string {
+	fmt.Print(prompt + ": ")
+	var res string
+	fmt.Scan(&res)
+	return res
+}
+
+func outputPassword(acc *account) {
+	fmt.Println(acc)
+	fmt.Println(acc.login, acc.password, acc.url)
+}
+
+func generatePassword(n int) string {
+	res := make([]rune, n)
+	for i := range res {
+		res[i] = letterRunes[rand.IntN(len(letterRunes))]
+	}
+	return string(res)
 }
