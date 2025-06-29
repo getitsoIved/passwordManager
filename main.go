@@ -1,63 +1,26 @@
 package main
 
 import (
-	"errors"
+	"basic_golang/passwordManager/account"
 	"fmt"
-	"math/rand/v2"
-	"net/url"
 )
-
-type account struct {
-	login    string
-	password string
-	url      string
-}
-
-func (acc *account) outputPassword() {
-	fmt.Println(acc.login, acc.password, acc.url)
-}
-
-func (acc *account) generatePassword(n int) {
-	res := make([]rune, n)
-	for i := range res {
-		res[i] = letterRunes[rand.IntN(len(letterRunes))]
-	}
-	acc.password = string(res)
-}
-
-func newAccount(login, password, urlString string) (*account, error) {
-
-	_, err := url.ParseRequestURI(urlString)
-	if err != nil {
-		return nil, errors.New("Invalid URL")
-	}
-
-	return &account{
-		url:      urlString,
-		login:    login,
-		password: password,
-	}, nil
-}
-
-var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-*!")
 
 func main() {
 	login := promptData("Введите логин")
 	password := promptData("Введите пароль")
 	url := promptData("Введите URL")
-	myAccount, err := newAccount(login, password, url)
+	myAccount, err := account.NewAccountWithTimeStamp(login, password, url)
 	if err != nil {
-		fmt.Println("Неверный формат URL")
+		fmt.Println("Неверный формат URL или Логин")
 		return
 	}
-	myAccount.generatePassword(12)
-	myAccount.outputPassword()
+	myAccount.OutputPassword()
 	fmt.Println(myAccount)
 }
 
 func promptData(prompt string) string {
 	fmt.Print(prompt + ": ")
 	var res string
-	fmt.Scan(&res)
+	fmt.Scanln(&res)
 	return res
 }
