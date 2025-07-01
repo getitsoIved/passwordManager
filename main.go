@@ -2,10 +2,13 @@ package main
 
 import (
 	"basic_golang/passwordManager/account"
+	"basic_golang/passwordManager/files"
 	"fmt"
 )
 
 func main() {
+	files.WriteFile("Привет! Я файл!!", "file.txt")
+	files.ReadFile()
 	login := promptData("Введите логин")
 	password := promptData("Введите пароль")
 	url := promptData("Введите URL")
