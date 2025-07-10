@@ -2,28 +2,29 @@ package main
 
 import (
 	"basic_golang/passwordManager/account"
-	"basic_golang/passwordManager/files"
 	"fmt"
+
+	"github.com/fatih/color"
 )
 
 func main() {
-
-	fmt.Println("___Менеджер паролей___")
-
+	fmt.Println("__Менеджер паролей__")
+	vault := account.NewVault()
 Menu:
 	for {
 		variant := getMenu()
 		switch variant {
 		case 1:
-			createAccount()
+			createAccount(vault)
 		case 2:
-			findAccount()
+			findAccount(vault)
 		case 3:
-			deleteAccount()
+			deleteAccount(vault)
 		default:
 			break Menu
 		}
 	}
+
 }
 
 func getMenu() int {
@@ -34,10 +35,35 @@ func getMenu() int {
 	fmt.Println("3. Удалить аккаунт")
 	fmt.Println("4. Выход")
 	fmt.Scan(&variant)
+
+	// Очистка буфера после ввода числа
+	var discard string
+	fmt.Scanln(&discard)
 	return variant
 }
 
-func createAccount() {
+func findAccount(vault *account.Vault) {
+	url := promptData("Введите URL для поиска")
+	accounts := vault.FindAccountsByUrl(url)
+	if len(accounts) == 0 {
+		color.Red("Аккаунтов не найдено")
+	}
+	for _, account := range accounts {
+		account.Output()
+	}
+}
+
+func deleteAccount(vault *account.Vault) {
+	url := promptData("Введите URL для поиска")
+	isDeleted := vault.DeleteAccountByUrl(url)
+	if isDeleted {
+		color.Green("Удалено")
+	} else {
+		color.Red("Не найдено")
+	}
+}
+
+func createAccount(vault *account.Vault) {
 	login := promptData("Введите логин")
 	password := promptData("Введите пароль")
 	url := promptData("Введите URL")
@@ -46,20 +72,7 @@ func createAccount() {
 		fmt.Println("Неверный формат URL или Логин")
 		return
 	}
-	file, err := myAccount.ToBytes()
-	if err != nil {
-		fmt.Println("Не удалось преобразовать в JSON")
-		return
-	}
-	files.WriteFile(file, "data.json")
-}
-
-func findAccount() {
-
-}
-
-func deleteAccount() {
-
+	vault.AddAccount(*myAccount)
 }
 
 func promptData(prompt string) string {
