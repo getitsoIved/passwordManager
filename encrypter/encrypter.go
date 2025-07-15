@@ -17,7 +17,6 @@ func NewEncrypter() *Encrypter {
 	if key == "" {
 		panic("Не передан параметр KEY в переменные окружения")
 	}
-
 	return &Encrypter{
 		Key: key,
 	}
