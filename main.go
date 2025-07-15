@@ -32,7 +32,7 @@ func main() {
 	fmt.Println("__Менеджер паролей__")
 	err := godotenv.Load()
 	if err != nil {
-		output.PrintError("Не удалось найти env файл")
+		output.PrintError(".env файл не найден — переменные будут прочитаны из окружения")
 	}
 	vault := account.NewVault(files.NewJsonDb("data.vault"), *encrypter.NewEncrypter())
 	// vault := account.NewVault(cloud.NewCloudDb("https://a.ru"))
